@@ -1,0 +1,59 @@
+name: Deploy Development Server
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      ## gradle build
+      - name: Build with Gradle
+        run: ./gradlew bootJar
+
+
+      ## 웹 이미지 빌드 및 도커허브에 push
+      - name: web docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t ${{ secrets.DOCKER_REPO }}/hackathon-web .
+          docker push ${{ secrets.DOCKER_REPO }}/hackathon-web
+          docker build -f dockerfile-nginx -t ${{ secrets.DOCKER_REPO }}/hackathon-nginx .
+          docker push ${{ secrets.DOCKER_REPO }}/hackathon-nginx
+
+      ## docker compose up
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          script: |
+            cd /home/ubuntu
+            
+            sudo touch .env
+            echo "${{ secrets.ENV_VARS }}" | sudo tee .env > /dev/null
+            
+            sudo touch docker-compose.yaml
+            echo "${{ vars.DOCKER_COMPOSE_DEV }}" | sudo tee docker-compose.yaml > /dev/null
+            
+            sudo chmod 666 /var/run/docker.sock
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/hackathon-web
+            sudo docker pull ${{ secrets.DOCKER_REPO }}/hackathon-nginx
+            docker-compose -f docker-compose.yaml --env-file ./.env up -d
+            docker image prune -f

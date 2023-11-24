@@ -1,0 +1,22 @@
+version: '3'
+services:
+
+  web:
+    container_name: web
+    image: mushroom6282/hackathon-web
+    env_file:
+      - .env
+    expose:
+      - 8080
+    ports:
+      - 8080:8080
+    tty: true
+    environment:
+      - TZ=Asia/Seoul
+  nginx:
+    container_name: nginx
+    image: mushroom6282/hackathon-nginx
+    ports:
+      - 80:80
+    depends_on:
+      - web
