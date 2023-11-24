@@ -1,4 +1,4 @@
-package com.example.hackathon.domain.test.api;
+package com.example.hackathon.domain.hello.api;
 
 
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/health")
-public class TestController {
+public class HelloController {
 
     @GetMapping
     public ResponseEntity<Boolean> health() {
