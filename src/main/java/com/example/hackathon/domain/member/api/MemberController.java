@@ -3,6 +3,7 @@ package com.example.hackathon.domain.member.api;
 import com.example.hackathon.domain.member.application.MemberService;
 import com.example.hackathon.domain.member.dto.MemberLoginRequest;
 import com.example.hackathon.global.jwt.TokenInfo;
+import com.example.hackathon.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +18,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private final MemberService memberService;
 
-    @PostMapping("/login")
-    public TokenInfo login(@RequestBody MemberLoginRequest memberLoginRequest) {
-        String memberId = memberLoginRequest.memberId();
+    @PostMapping("/register")
+    public TokenInfo register(@RequestBody MemberLoginRequest memberLoginRequest) {
+        String username = memberLoginRequest.username();
         String password = memberLoginRequest.password();
-        TokenInfo tokenInfo = memberService.login(memberId, password);
-        return tokenInfo;
+        memberService.register(username, password);
+        return memberService.login(username, password);
     }
 
-    @PostMapping("/test")
-    public String test() {
-        return "success";
+    @PostMapping("/login")
+    public TokenInfo login(@RequestBody MemberLoginRequest memberLoginRequest) {
+        String username = memberLoginRequest.username();
+        String password = memberLoginRequest.password();
+        return memberService.login(username, password);
+    }
+
+    @PostMapping("/whoami")
+    public String whoami() {
+        return SecurityUtil.getCurrentUsername();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.hackathon.domain.member.application;
 
+import com.example.hackathon.domain.member.domain.Member;
 import com.example.hackathon.domain.member.repository.MemberRepository;
 import com.example.hackathon.global.jwt.JwtTokenProvider;
 import com.example.hackathon.global.jwt.TokenInfo;
@@ -10,8 +11,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class MemberService {
 
@@ -20,10 +23,10 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public TokenInfo login(String memberId, String password) {
+    public TokenInfo login(String username, String password) {
         // 1. Login ID/PW 를 기반으로 Authentication 객체 생성
         // 이때 authentication 는 인증 여부를 확인하는 authenticated 값이 false
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberId, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 
         // 2. 실제 검증 (사용자 비밀번호 체크)이 이루어지는 부분
         // authenticate 매서드가 실행될 때 CustomUserDetailsService 에서 만든 loadUserByUsername 메서드가 실행
@@ -33,5 +36,11 @@ public class MemberService {
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
 
         return tokenInfo;
+    }
+
+    public void register(String username, String password) {
+
+        Member member = Member.of(username, password, List.of("USER"));
+        memberRepository.save(member);
     }
 }

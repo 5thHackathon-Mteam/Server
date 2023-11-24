@@ -16,9 +16,12 @@ import java.util.stream.Collectors;
 @Entity
 public class Member implements UserDetails {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, unique = true, nullable = false)
-    private String memberId;
+    private Long id;
+
+    @Column(unique = true, nullable = false)
+    private String username;
 
     @Column(nullable = false)
     private String password;
@@ -36,7 +39,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return memberId;
+        return username;
     }
 
     @Override
@@ -67,10 +70,18 @@ public class Member implements UserDetails {
     }
 
     @Builder
-    public Member(String memberId, String password, List<String> roles) {
-        this.memberId = memberId;
+    public Member(String username, String password, List<String> roles) {
+        this.username = username;
         this.password = password;
         this.roles = roles;
+    }
+
+    public static Member of(String username, String password, List<String> roles) {
+        return Member.builder()
+                .username(username)
+                .password(password)
+                .roles(roles)
+                .build();
     }
 
 }
