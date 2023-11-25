@@ -27,12 +27,8 @@ public class CommentService {
 
     public Comment save(Long feedId, CommentRequest commentRequest) {
 
-        String username = SecurityUtil.getCurrentUsername();
-
-        System.out.println("username = " + username);
-
-        Member member = memberRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("Could not found username : " + username));
+        Member member = memberRepository.findById(commentRequest.memberId())
+                .orElseThrow(() -> new NotFoundException("Could not found username : " + commentRequest.memberId()));
 
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new NotFoundException("Could not found feed id : " + feedId));
@@ -67,8 +63,6 @@ public class CommentService {
     }
 
     public List<CommentResponse> getCommentByFeedId(Long feedId) {
-
-        System.out.println("feedId = " + feedId);
 
         List<Comment> allByFeedId = commentRepository.findAllByFeedId(feedId);
 
