@@ -1,4 +1,4 @@
-package com.example.hackathon.domain.feed;
+package com.example.hackathon.domain.feed.domain;
 
 import com.example.hackathon.domain.base.BaseEntity;
 import jakarta.persistence.Entity;
