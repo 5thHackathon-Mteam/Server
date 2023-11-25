@@ -31,6 +31,22 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<FeedResponse> findPageByCursorIdAndMemberId(Long cursorId, int pageSize, Long memberId) {
+        return jpaQueryFactory
+                .select(new QFeedResponse(
+                        feed.id,
+                        feed.gptContent,
+                        feed.frameColor,
+                        feed.date
+                ))
+                .from(feed)
+                .where(ltCursorId(cursorId), feed.isDeleted.eq(false), feed.memberId.eq(memberId))
+                .orderBy(feed.createdDate.desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
     private BooleanExpression ltCursorId(Long cursorId) {
         return cursorId != null ? feed.id.lt(cursorId) : null;
     }

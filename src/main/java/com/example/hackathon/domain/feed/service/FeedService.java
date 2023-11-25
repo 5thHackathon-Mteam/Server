@@ -37,11 +37,6 @@ public class FeedService {
 
     public void create(FeedCreateRequest request) {
 
-        String email = SecurityUtil.getCurrentUsername();
-
-        System.out.println("email = " + email);
-
-
         validate(request);
 
         List<String> imageUrls = getImageUrls(request);
@@ -52,6 +47,7 @@ public class FeedService {
                 .frameColor(request.getFrameColor())
                 .gptContent(gptContent)
                 .date(request.getDate())
+                .memberId(request.getId())
                 .build();
 
         feedRepository.save(buildFeed);
@@ -130,5 +126,9 @@ public class FeedService {
         return feedImageResponses;
 
 
+    }
+
+    public List<FeedResponse> getFeedListByMemberId(Long memberId, Long cursorId, int pageSize) {
+        return feedRepository.findPageByCursorIdAndMemberId(cursorId, pageSize, memberId);
     }
 }
