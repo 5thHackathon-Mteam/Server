@@ -24,34 +24,47 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(unique = true)
     private String userId;
 
+    @Column(unique = true)
+    private String email;
+
     @Column(unique = true, nullable = false)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Member> friends;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
     @Builder
-    public Member(String username, String password, List<String> roles, String userId) {
+    public Member(String username, String password, List<String> roles, String userId, String email) {
         this.username = username;
         this.password = password;
         this.roles = roles;
         this.userId = userId;
+        this.email = email;
     }
 
     public Member() {
 
     }
 
-    public static Member of(String username, String password, List<String> roles, String userId) {
+    public static Member of(String username, String password, List<String> roles, String userId, String email) {
         return Member.builder()
                 .username(username)
                 .password(password)
                 .roles(roles)
                 .userId(userId)
+                .email(email)
                 .build();
     }
 
