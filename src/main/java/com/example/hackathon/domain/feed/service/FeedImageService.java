@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class FeedImageService {
     private final FeedImageRepository feedImageRepository;
 
-    public FeedImage from(Feed feed, String imageUrl) {
+    public void from(Feed feed, String imageUrl) {
         FeedImage feedImage = FeedImage.builder()
                 .feed(feed)
                 .imageUrl(imageUrl)
                 .build();
-        return feedImage;
+        feedImageRepository.save(feedImage);
     }
 }
