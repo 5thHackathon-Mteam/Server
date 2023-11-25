@@ -40,3 +40,6 @@ cloud:
       bucket: {BUCKET_NAME}
     region:
       static: {REGION}
+
+bucket:
+  dirname: {DIR_NAME}
