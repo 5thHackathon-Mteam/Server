@@ -8,16 +8,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class FriendService {
     private final FriendRepository friendRepository;
     public void requestFriend(CreateFriendRequest createFriendRequest) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentEmail = authentication.getName();
-
+        String currentEmail = createFriendRequest.getCurrentEmail();
         String toUserEmail = createFriendRequest.getTargetEmail();
 
         Friend currentToTarget = Friend.builder()
@@ -34,4 +34,16 @@ public class FriendService {
 
         friendRepository.saveAll(List.of(currentToTarget, targetToCurrent));
     }
+
+
+    public void acceptFriend(CreateFriendRequest createFriendRequest) {
+
+        String currentEmail = createFriendRequest.getCurrentEmail();
+        String fromEmail = createFriendRequest.getTargetEmail();
+
+        Friend friendRequest = friendRepository.getFriendRequest(currentEmail, fromEmail);
+        friendRequest.acceptFriend(true);
+    }
+
+
 }
