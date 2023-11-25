@@ -3,6 +3,7 @@ package com.example.hackathon.domain.member.api;
 import com.example.hackathon.domain.member.application.MemberService;
 import com.example.hackathon.domain.member.dto.MemberLoginRequest;
 import com.example.hackathon.global.jwt.TokenInfo;
+import com.example.hackathon.global.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,13 @@ public class MemberController {
     public ResponseEntity<String> test() {
         return ResponseEntity.ok()
                 .body("you are authenticated");
+    }
+
+    @Operation(summary = "whoami", security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/whoami")
+    public ResponseEntity<String> whoami() {
+        return ResponseEntity.ok()
+                .body(SecurityUtil.getCurrentUsername());
     }
 
 }

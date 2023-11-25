@@ -20,4 +20,11 @@ public class Feed extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    public void changeGptContent(String gptContent) {
+        this.gptContent = gptContent;
+    }
+
+    public void changeIsDeleted() {
+        this.isDeleted = true;
+    }
 }

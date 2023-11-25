@@ -4,6 +4,7 @@ import com.example.hackathon.domain.feed.domain.Category;
 import com.example.hackathon.domain.feed.domain.Feed;
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
+import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
 import com.example.hackathon.domain.feed.repository.FeedImageRepository;
 import com.example.hackathon.domain.feed.repository.FeedRepository;
 import com.example.hackathon.global.config.S3Uploader;
@@ -16,8 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-import static com.example.hackathon.global.error.exception.ErrorCode.CONNECT_S3_ERROR;
-import static com.example.hackathon.global.error.exception.ErrorCode.FEED_IMAGE_INVALID_SIZE;
+import static com.example.hackathon.global.error.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -66,7 +66,27 @@ public class FeedService {
     }
 
     public List<FeedResponse> getFeedList(Long cursorId, int pageSize) {
-//        return null;
         return feedRepository.findPageByCursorId(cursorId, pageSize);
+    }
+
+    public FeedResponse updateFeed(Long feedId, FeedUpdateRequest feedUpdateRequest) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
+
+        feed.changeGptContent(feedUpdateRequest.gptContent());
+        feedRepository.save(feed);
+        return FeedResponse.from(feed);
+    }
+
+    public Boolean deleteFeed(Long feedId) {
+        System.out.println("feedId = " + feedId);
+
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
+
+        feed.changeIsDeleted();
+        feedRepository.save(feed);
+
+        return true;
     }
 }

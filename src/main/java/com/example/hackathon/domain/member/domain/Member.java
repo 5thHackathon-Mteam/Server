@@ -1,5 +1,6 @@
 package com.example.hackathon.domain.member.domain;
 
+import com.example.hackathon.domain.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Entity
-public class Member implements UserDetails {
+public class Member extends BaseEntity implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, unique = true, nullable = false)
