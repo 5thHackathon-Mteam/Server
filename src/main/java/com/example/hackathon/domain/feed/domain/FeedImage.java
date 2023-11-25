@@ -27,9 +27,4 @@ public class FeedImage {
     @JoinColumn(name = "feed_id")
     private Feed feed;
     private String imageUrl;
-
-    public void mappingFeed(Feed feed) {
-        this.feed = feed;
-        feed.getImageUrlList().add(this);
-    }
 }
