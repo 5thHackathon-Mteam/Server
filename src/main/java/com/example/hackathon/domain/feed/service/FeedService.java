@@ -11,6 +11,7 @@ import com.example.hackathon.domain.feed.repository.FeedImageRepository;
 import com.example.hackathon.domain.feed.repository.FeedRepository;
 import com.example.hackathon.global.config.S3Uploader;
 import com.example.hackathon.global.error.exception.CustomException;
+import com.example.hackathon.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,12 @@ public class FeedService {
     private final FeedImageRepository feedImageRepository;
 
     public void create(FeedCreateRequest request) {
+
+        String email = SecurityUtil.getCurrentUsername();
+
+        System.out.println("email = " + email);
+
+
         validate(request);
 
         List<String> imageUrls = getImageUrls(request);

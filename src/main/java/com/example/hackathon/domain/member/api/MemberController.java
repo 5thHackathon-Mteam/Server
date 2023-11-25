@@ -68,4 +68,10 @@ public class MemberController {
                 .body(memberService.getFriendList());
     }
 
+    @PostMapping("/userData")
+    public ResponseEntity<MemberResponse> getUserData(@RequestBody String email) {
+        return ResponseEntity.ok()
+                .body(memberService.getMember(email));
+    }
+
 }

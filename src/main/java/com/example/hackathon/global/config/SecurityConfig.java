@@ -45,6 +45,7 @@ public class SecurityConfig {
                                         , "/api-docs/swagger-config"
                                         , "/members/login"
                                         , "/health"
+                                        , "/**"
                                 ).permitAll()
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/members/test").hasRole("USER")

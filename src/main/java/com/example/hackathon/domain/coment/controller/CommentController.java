@@ -1,14 +1,13 @@
 package com.example.hackathon.domain.coment.controller;
 
 import com.example.hackathon.domain.coment.dto.CommentRequest;
-import com.example.hackathon.domain.coment.dto.CommentResponse;
 import com.example.hackathon.domain.coment.service.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -18,6 +17,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
+    @Operation(summary = "댓글 리스트 가져오기", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/{feedId}")
     public ResponseEntity<Boolean> save(@PathVariable Long feedId, @RequestBody CommentRequest commentRequest) {
         commentService.save(feedId, commentRequest);

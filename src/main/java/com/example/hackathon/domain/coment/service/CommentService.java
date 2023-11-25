@@ -29,6 +29,8 @@ public class CommentService {
 
         String username = SecurityUtil.getCurrentUsername();
 
+        System.out.println("username = " + username);
+
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("Could not found username : " + username));
 

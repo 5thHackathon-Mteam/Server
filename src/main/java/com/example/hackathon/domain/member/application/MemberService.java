@@ -69,4 +69,11 @@ public class MemberService {
 
 
     }
+
+    public MemberResponse getMember(String email) {
+        return memberRepository.findByEmail(email)
+                .map(MemberResponse::from)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+    }
+
 }
