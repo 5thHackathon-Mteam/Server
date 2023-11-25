@@ -16,4 +16,5 @@ public class FeedCreateRequest {
     private List<String> categories;
     private String frameColor;
     private LocalDate date;
+    private Long id;
 }

@@ -41,6 +41,8 @@ public class Feed extends BaseEntity {
 
     private LocalDate date;
 
+    private Long memberId;
+
     public void changeGptContent(String gptContent) {
         this.gptContent = gptContent;
     }

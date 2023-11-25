@@ -2,6 +2,7 @@ package com.example.hackathon.domain.member.api;
 
 import com.example.hackathon.domain.member.application.MemberService;
 import com.example.hackathon.domain.member.dto.MemberLoginRequest;
+import com.example.hackathon.domain.member.dto.MemberResponse;
 import com.example.hackathon.global.jwt.TokenInfo;
 import com.example.hackathon.global.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,10 +10,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -51,6 +51,27 @@ public class MemberController {
     public ResponseEntity<String> whoami() {
         return ResponseEntity.ok()
                 .body(SecurityUtil.getCurrentUsername());
+    }
+
+    @Operation(summary = "이메일로 찾기")
+    @GetMapping("/find")
+    public ResponseEntity<MemberResponse> findEmail(@RequestParam String email) {
+        return ResponseEntity.ok()
+                .body(memberService.getMemberByEmail(email));
+    }
+
+    @Operation(summary = "친구 모아보기")
+    @GetMapping("/friends")
+    public ResponseEntity<List<MemberResponse>> findFriends() {
+
+        return ResponseEntity.ok()
+                .body(memberService.getFriendList());
+    }
+
+    @PostMapping("/userData")
+    public ResponseEntity<MemberResponse> getUserData(@RequestBody String email) {
+        return ResponseEntity.ok()
+                .body(memberService.getMember(email));
     }
 
 }

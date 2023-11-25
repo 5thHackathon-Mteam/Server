@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface FeedRepositoryCustom {
     List<FeedResponse> findPageByCursorId(Long cursorId, int pageSize);
+    List<FeedResponse> findPageByCursorIdAndMemberId(Long cursorId, int pageSize, Long memberId);
 }
