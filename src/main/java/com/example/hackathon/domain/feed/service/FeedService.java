@@ -1,10 +1,10 @@
 package com.example.hackathon.domain.feed.service;
 
-import com.example.hackathon.domain.feed.domain.Category;
 import com.example.hackathon.domain.feed.domain.Feed;
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
-import com.example.hackathon.domain.feed.repository.FeedImageRepository;
+import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
+import com.example.hackathon.domain.feed.openai.OpenAiService;
 import com.example.hackathon.domain.feed.repository.FeedRepository;
 import com.example.hackathon.global.config.S3Uploader;
 import com.example.hackathon.global.error.exception.CustomException;
@@ -16,8 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-import static com.example.hackathon.global.error.exception.ErrorCode.CONNECT_S3_ERROR;
-import static com.example.hackathon.global.error.exception.ErrorCode.FEED_IMAGE_INVALID_SIZE;
+import static com.example.hackathon.global.error.exception.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -27,29 +26,43 @@ public class FeedService {
     private final S3Uploader s3Uploader;
     private final FeedImageService feedImageService;
     private final FeedRepository feedRepository;
-    private final FeedImageRepository feedImageRepository;
+    private final OpenAiService openAiService;
+    private final CategoryService categoryService;
 
     public void create(FeedCreateRequest request) {
         validate(request);
 
-        String content = request.getContent();
-        // ToDo GPT API 이용, get gptContent
+        List<String> imageUrls = getImageUrls(request);
+        String gptContent = fromContent(imageUrls);
+        List<String> categories = request.getCategories();
 
         Feed buildFeed = Feed.builder()
-                .content(content)
-                .gptContent("gptContent")
-                .category(Category.NONE)
+                .gptContent(gptContent)
                 .build();
 
         feedRepository.save(buildFeed);
 
-        List<String> imageUrls = getImageUrls(request);
+        categories.forEach(category -> categoryService.from(buildFeed, category));
 
-        imageUrls.stream().map(imageUrl -> feedImageService.from(buildFeed, imageUrl))
-                .forEach(feedImageRepository::save);
+        imageUrls.forEach(imageUrl -> feedImageService.from(buildFeed, imageUrl));
+    }
+
+    private String fromContent(List<String> imageUrls) {
+        String mainImageUrl = imageUrls.get(0);
+        return openAiService.createGptContent(mainImageUrl);
     }
 
     public void validate(FeedCreateRequest request){
+        validateImageSize(request);
+        validateCategories(request);
+    }
+
+    private void validateCategories(FeedCreateRequest request) {
+        List<String> categories = request.getCategories();
+        // TODO Catogory 검증
+    }
+
+    private void validateImageSize(FeedCreateRequest request) {
         List<MultipartFile> multipartFiles = request.getMultipartFiles();
         if (multipartFiles.size() != 4) {
             throw new CustomException(FEED_IMAGE_INVALID_SIZE);
@@ -66,7 +79,27 @@ public class FeedService {
     }
 
     public List<FeedResponse> getFeedList(Long cursorId, int pageSize) {
-//        return null;
         return feedRepository.findPageByCursorId(cursorId, pageSize);
+    }
+
+    public FeedResponse updateFeed(Long feedId, FeedUpdateRequest feedUpdateRequest) {
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
+
+        feed.changeGptContent(feedUpdateRequest.gptContent());
+        feedRepository.save(feed);
+        return FeedResponse.from(feed);
+    }
+
+    public Boolean deleteFeed(Long feedId) {
+        System.out.println("feedId = " + feedId);
+
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
+
+        feed.changeIsDeleted();
+        feedRepository.save(feed);
+
+        return true;
     }
 }

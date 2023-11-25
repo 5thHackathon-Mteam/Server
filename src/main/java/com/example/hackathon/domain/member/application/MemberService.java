@@ -1,9 +1,11 @@
 package com.example.hackathon.domain.member.application;
 
 import com.example.hackathon.domain.member.domain.Member;
+import com.example.hackathon.domain.member.dto.MemberResponse;
 import com.example.hackathon.domain.member.repository.MemberRepository;
 import com.example.hackathon.global.jwt.JwtTokenProvider;
 import com.example.hackathon.global.jwt.TokenInfo;
+import com.example.hackathon.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -40,7 +42,31 @@ public class MemberService {
 
     public void register(String username, String password) {
 
-        Member member = Member.of(username, password, List.of("USER"));
+        Member member = Member.of(username, password, List.of("USER"), null, null);
         memberRepository.save(member);
+    }
+
+
+    public MemberResponse getMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email).orElse(null);
+
+        if (member == null) {
+            return null;
+        }
+
+        return MemberResponse.from(member);
+    }
+
+    public List<MemberResponse> getFriendList() {
+        // 요청한 멤버의 id를 가져옴
+        String username = SecurityUtil.getCurrentUsername();
+
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
+
+        return null;
+
+
+
     }
 }

@@ -22,6 +22,7 @@ public enum ErrorCode {
     CONNECT_S3_ERROR(500, "F0003", "서버에서 S3 연결 에러입니다."),
     FEED_IMAGE_INVALID_SIZE(400, "F0004", "사진 업로드시 4장이 필수입니다."),
 
+
     // Open Ai
     GPT_INVALID_ERROR(500, "G0001", "사진으로 질문 후 응답 받을 수 없는 서버에러입니다."),
 
