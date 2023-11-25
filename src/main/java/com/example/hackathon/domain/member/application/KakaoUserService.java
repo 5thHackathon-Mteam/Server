@@ -113,12 +113,16 @@ public class KakaoUserService {
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
 
-        return SocialUserInfoResponse.of(id, nickname);
+        String email = jsonNode.get("kakao_account")
+                .get("email").asText();
+
+        return SocialUserInfoResponse.of(id, nickname, email);
     }
 
     private Member registerKakaoUserIfNeed (SocialUserInfoResponse kakaoUserInfo) {
         String userId = kakaoUserInfo.getId().toString();
         String nickname = kakaoUserInfo.getNickname();
+        String email = kakaoUserInfo.getEmail();
         Member kakaoUser = memberRepository.findByUserId(userId)
                 .orElse(null);
 
@@ -131,6 +135,7 @@ public class KakaoUserService {
                     .username(nickname)
                     .password(encodedPassword)
                     .roles(List.of("USER"))
+                    .email(email)
                     .build();
 
             memberRepository.save(kakaoUser);
