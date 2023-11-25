@@ -69,11 +69,24 @@ public class FeedService {
         return feedRepository.findPageByCursorId(cursorId, pageSize);
     }
 
-    public FeedResponse update(Long feedId, FeedUpdateRequest feedUpdateRequest) {
+    public FeedResponse updateFeed(Long feedId, FeedUpdateRequest feedUpdateRequest) {
         Feed feed = feedRepository.findById(feedId)
                 .orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
 
-        feed.update(feedUpdateRequest.gptContent());
+        feed.changeGptContent(feedUpdateRequest.gptContent());
+        feedRepository.save(feed);
         return FeedResponse.from(feed);
+    }
+
+    public Boolean deleteFeed(Long feedId) {
+        System.out.println("feedId = " + feedId);
+
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
+
+        feed.changeIsDeleted();
+        feedRepository.save(feed);
+
+        return true;
     }
 }

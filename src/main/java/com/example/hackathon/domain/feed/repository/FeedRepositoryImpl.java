@@ -25,7 +25,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                         feed.category
                 ))
                 .from(feed)
-                .where(ltCursorId(cursorId))
+                .where(ltCursorId(cursorId), feed.isDeleted.eq(false))
                 .orderBy(feed.createdDate.desc())
                 .limit(pageSize)
                 .fetch();
