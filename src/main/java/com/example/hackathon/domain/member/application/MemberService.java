@@ -40,7 +40,7 @@ public class MemberService {
 
     public void register(String username, String password) {
 
-        Member member = Member.of(username, password, List.of("USER"));
+        Member member = Member.of(username, password, List.of("USER"), null);
         memberRepository.save(member);
     }
 }
