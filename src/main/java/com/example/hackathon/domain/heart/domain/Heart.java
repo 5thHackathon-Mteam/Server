@@ -23,8 +23,10 @@ public class Heart {
     private Long id;
 
     @Column(nullable = false)
-    private Long memberId;
+    private String username;
 
     @Column(nullable = false)
     private Long feedId;
+
+    private boolean isLike = false;
 }
