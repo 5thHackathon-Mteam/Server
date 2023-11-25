@@ -23,14 +23,14 @@ public class Heart {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private Long memberId;
 
     @Column(nullable = false)
     private Long feedId;
 
     private boolean isLike = false;
 
-    public void changeLike(boolean isLike) {
-        this.isLike = isLike;
+    public void changeLike() {
+        this.isLike = !isLike;
     }
 }

@@ -22,21 +22,17 @@ public class HeartService {
     private final HeartRepository heartRepository;
     private final FeedRepository feedRepository;
 
-    public Boolean manageHeart(Long feedId) {
+    public Boolean manageHeart(Long feedId, Long memberId) {
 
         feedRepository.findById(feedId).orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-
-        Heart heart = heartRepository.findByUsernameAndFeedId(email, feedId)
+        Heart heart = heartRepository.findByMemberIdAndFeedId(memberId, feedId)
                 .orElseGet(() -> Heart.builder()
-                        .username(email)
+                        .memberId(memberId)
                         .feedId(feedId)
                         .build());
 
-        heart.changeLike(false);
+        heart.changeLike();
         heartRepository.save(heart);
 
         return true;
