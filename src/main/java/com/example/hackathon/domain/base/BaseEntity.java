@@ -19,4 +19,6 @@ public class BaseEntity extends BaseTimeEntity{
 
     @LastModifiedBy
     private String lastModifiedBy;
+
+    protected boolean isDeleted;
 }
