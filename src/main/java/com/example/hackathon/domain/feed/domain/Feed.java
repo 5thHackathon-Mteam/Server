@@ -18,4 +18,11 @@ public class Feed extends BaseEntity {
 
     private String gptContent;
 
+    public void changeGptContent(String gptContent) {
+        this.gptContent = gptContent;
+    }
+
+    public void changeIsDeleted() {
+        this.isDeleted = true;
+    }
 }

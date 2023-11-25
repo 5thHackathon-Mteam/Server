@@ -1,11 +1,12 @@
 package com.example.hackathon.domain.member.domain;
 
+import com.example.hackathon.domain.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,11 +15,14 @@ import java.util.stream.Collectors;
 
 @Getter
 @Entity
-public class Member implements UserDetails {
+public class Member extends BaseEntity implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, unique = true, nullable = false)
     private Long id;
+
+    @Column(unique = true)
+    private String userId;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -30,6 +34,27 @@ public class Member implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
+    @Builder
+    public Member(String username, String password, List<String> roles, String userId) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+        this.userId = userId;
+    }
+
+    public Member() {
+
+    }
+
+    public static Member of(String username, String password, List<String> roles, String userId) {
+        return Member.builder()
+                .username(username)
+                .password(password)
+                .roles(roles)
+                .userId(userId)
+                .build();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles.stream()
@@ -38,50 +63,22 @@ public class Member implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return username;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return false;
     }
-    public Member() {
-    }
-
-    @Builder
-    public Member(String username, String password, List<String> roles) {
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-    }
-
-    public static Member of(String username, String password, List<String> roles) {
-        return Member.builder()
-                .username(username)
-                .password(password)
-                .roles(roles)
-                .build();
-    }
-
 }

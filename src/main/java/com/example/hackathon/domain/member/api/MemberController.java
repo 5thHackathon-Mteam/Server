@@ -39,17 +39,18 @@ public class MemberController {
                 .body(memberService.login(username, password));
     }
 
-    @PostMapping("/whoami")
-    public ResponseEntity<String> whoami() {
-        return ResponseEntity.ok()
-                .body(SecurityUtil.getCurrentUsername());
-    }
-
     @Operation(summary = "test if token works", security = @SecurityRequirement(name = "bearerAuth"))
     @PostMapping("/test")
     public ResponseEntity<String> test() {
         return ResponseEntity.ok()
                 .body("you are authenticated");
+    }
+
+    @Operation(summary = "whoami", security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/whoami")
+    public ResponseEntity<String> whoami() {
+        return ResponseEntity.ok()
+                .body(SecurityUtil.getCurrentUsername());
     }
 
 }
