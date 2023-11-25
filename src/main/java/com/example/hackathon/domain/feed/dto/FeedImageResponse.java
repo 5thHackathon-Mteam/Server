@@ -1,8 +1,15 @@
 package com.example.hackathon.domain.feed.dto;
 
-import com.example.hackathon.domain.feed.domain.FeedImage;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+@Getter @RequiredArgsConstructor
+public class FeedImageResponse {
 
-public record FeedImageResponse (String url) {
+    private final String url;
+
+
+    public static FeedImageResponse from(String s) {
+        return new FeedImageResponse(s);
+    }
 }

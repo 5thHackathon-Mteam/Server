@@ -90,7 +90,17 @@ public class FeedService {
     }
 
     public List<FeedResponse> getFeedList(Long cursorId, int pageSize) {
-        return feedRepository.findPageByCursorId(cursorId, pageSize);
+        List<FeedResponse> pageByCursorId = feedRepository.findPageByCursorId(cursorId, pageSize);
+
+        for (FeedResponse feedResponse : pageByCursorId) {
+            List<FeedImageResponse> feedImages = getFeedImages(feedResponse.getId());
+            feedResponse.setFeedImageResponse1(feedImages.get(0));
+            feedResponse.setFeedImageResponse2(feedImages.get(1));
+            feedResponse.setFeedImageResponse3(feedImages.get(2));
+            feedResponse.setFeedImageResponse4(feedImages.get(3));
+        }
+
+        return pageByCursorId;
     }
 
     public FeedResponse updateFeed(Long feedId, FeedUpdateRequest feedUpdateRequest) {
