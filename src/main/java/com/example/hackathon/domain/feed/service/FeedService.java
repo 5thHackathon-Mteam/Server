@@ -4,7 +4,7 @@ import com.example.hackathon.domain.feed.domain.Feed;
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
 import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
-import com.example.hackathon.domain.feed.repository.FeedImageRepository;
+import com.example.hackathon.domain.feed.openai.OpenAiService;
 import com.example.hackathon.domain.feed.repository.FeedRepository;
 import com.example.hackathon.global.config.S3Uploader;
 import com.example.hackathon.global.error.exception.CustomException;

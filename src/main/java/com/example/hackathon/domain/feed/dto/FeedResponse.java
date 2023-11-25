@@ -1,9 +1,7 @@
 package com.example.hackathon.domain.feed.dto;
 
-import com.example.hackathon.domain.feed.domain.Category;
 import com.example.hackathon.domain.feed.domain.Feed;
 import com.querydsl.core.annotations.QueryProjection;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,9 +20,7 @@ public class FeedResponse {
     public static FeedResponse from(Feed feed) {
         return FeedResponse.builder()
                 .id(feed.getId())
-                .content(feed.getContent())
                 .gptContent(feed.getGptContent())
-                .category(feed.getCategory())
                 .build();
     }
 }
