@@ -5,5 +5,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HeartRepository extends JpaRepository<Heart, Long> {
-    Optional<Heart> findByMemberIdAndFeedId(Long memberId, Long feedId);
+    Optional<Heart> findByUsernameAndFeedId(String memberUsername, Long feedId);
 }

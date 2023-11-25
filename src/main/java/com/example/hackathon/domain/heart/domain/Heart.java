@@ -29,4 +29,8 @@ public class Heart {
     private Long feedId;
 
     private boolean isLike = false;
+
+    public void changeLike(boolean isLike) {
+        this.isLike = isLike;
+    }
 }
