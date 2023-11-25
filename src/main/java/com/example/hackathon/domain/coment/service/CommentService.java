@@ -1,0 +1,59 @@
+package com.example.hackathon.domain.coment.service;
+
+import com.example.hackathon.domain.coment.domain.Comment;
+import com.example.hackathon.domain.coment.dto.CommentRequest;
+import com.example.hackathon.domain.coment.repository.CommentRepository;
+import com.example.hackathon.domain.feed.domain.Feed;
+import com.example.hackathon.domain.feed.repository.FeedRepository;
+import com.example.hackathon.domain.member.domain.Member;
+import com.example.hackathon.domain.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class CommentService {
+
+    private final CommentRepository commentRepository;
+    private final MemberRepository memberRepository;
+    private final FeedRepository feedRepository;
+
+    public Comment save(Long feedId, CommentRequest commentRequest) {
+        Member member = memberRepository.findById(commentRequest.memberId())
+                .orElseThrow(() -> new NotFoundException("Could not found member id : " + commentRequest.memberId()));
+
+        Feed feed = feedRepository.findById(feedId)
+                .orElseThrow(() -> new NotFoundException("Could not found feed id : " + feedId));
+
+        Comment comment = Comment.builder()
+                .content(commentRequest.content())
+                .writer(member)
+                .feed(feed)
+                .build();
+
+        if (commentRequest.parentId() != null) {
+            Comment parentComment = commentRepository.findById(commentRequest.parentId())
+                    .orElseThrow(() -> new NotFoundException("Could not found comment id : " + commentRequest.parentId()));
+
+            comment.updateParent(parentComment);
+            parentComment.getChildrenComments().add(comment);
+        }
+
+        return commentRepository.save(comment);
+    }
+
+    public void delete(Long commentId) {
+        Comment comment = commentRepository.findCommentByIdWithParent(commentId)
+                .orElseThrow(() -> new NotFoundException("Could not found comment : " + commentId));
+        commentRepository.delete(comment);
+    }
+
+    public void update(Long commentId, CommentRequest commentRequest) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NotFoundException("Could not found comment id : " + commentId));
+        comment.updateContent(commentRequest.content());
+    }
+}
