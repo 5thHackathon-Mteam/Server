@@ -20,7 +20,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
         return jpaQueryFactory
                 .select(new QFeedResponse(
                         feed.id,
-                        feed.gptContent
+                        feed.gptContent,
+                        feed.frameColor,
+                        feed.date
                 ))
                 .from(feed)
                 .where(ltCursorId(cursorId), feed.isDeleted.eq(false))

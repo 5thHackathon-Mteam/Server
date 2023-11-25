@@ -3,6 +3,7 @@ package com.example.hackathon.domain.feed.controller;
 import com.example.hackathon.domain.coment.dto.CommentResponse;
 import com.example.hackathon.domain.coment.service.CommentService;
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
+import com.example.hackathon.domain.feed.dto.FeedImageResponse;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
 import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
 import com.example.hackathon.domain.feed.service.FeedService;
@@ -31,6 +32,12 @@ public class FeedController {
                                                             @RequestParam int pageSize) {
         return ResponseEntity.ok()
                 .body(feedService.getFeedList(cursorId, pageSize));
+    }
+
+    @GetMapping(value = "/images")
+    public ResponseEntity<List<FeedImageResponse>> getFeedImages(@RequestParam Long feedId) {
+        return ResponseEntity.ok()
+                .body(feedService.getFeedImages(feedId));
     }
 
 
