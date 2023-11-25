@@ -23,6 +23,18 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
+cloud:
+  aws:
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY}
+      secretKey: ${AWS_SECRET_KEY}
+    s3:
+      bucket: hackathon-m-s3-bucket
+    region:
+      static: ap-northeast-2
+
+bucket:
+  dirname: /images
 
 jwt:
   secret: ${JWT_SECRET}
@@ -30,16 +42,3 @@ jwt:
 server:
   servlet:
     context-path: /api
-
-cloud:
-  aws:
-    credentials:
-      accessKey: {ACCESS_KEY}
-      secretKey: {SECRET_KEY}
-    s3:
-      bucket: {BUCKET_NAME}
-    region:
-      static: {REGION}
-
-bucket:
-  dirname: {DIR_NAME}
