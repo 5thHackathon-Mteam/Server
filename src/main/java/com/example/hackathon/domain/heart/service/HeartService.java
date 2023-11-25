@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -26,11 +28,18 @@ public class HeartService {
 
         feedRepository.findById(feedId).orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
 
-        Heart heart = heartRepository.findByMemberIdAndFeedId(memberId, feedId)
-                .orElseGet(() -> Heart.builder()
-                        .memberId(memberId)
-                        .feedId(feedId)
-                        .build());
+        Heart heart = heartRepository.findByMemberIdAndFeedId(memberId, feedId);
+
+        if (heart == null) {
+            heart = Heart.builder()
+                .feedId(feedId)
+                .memberId(memberId)
+                .isLike(true)
+                .build();
+            heartRepository.save(heart);
+            return true;
+        }
+
 
         heart.changeLike();
         heartRepository.save(heart);

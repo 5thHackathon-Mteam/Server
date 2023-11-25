@@ -30,6 +30,13 @@ public class Heart {
 
     private boolean isLike = false;
 
+    public static Heart of(Long memberId, Long feedId) {
+        return Heart.builder()
+            .memberId(memberId)
+            .feedId(feedId)
+            .build();
+    }
+
     public void changeLike() {
         this.isLike = !isLike;
     }
