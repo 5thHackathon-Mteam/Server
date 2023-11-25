@@ -3,7 +3,6 @@ package com.example.hackathon.domain.member.api;
 import com.example.hackathon.domain.member.application.MemberService;
 import com.example.hackathon.domain.member.dto.MemberLoginRequest;
 import com.example.hackathon.global.jwt.TokenInfo;
-import com.example.hackathon.global.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +36,6 @@ public class MemberController {
         String password = memberLoginRequest.password();
         return ResponseEntity.ok()
                 .body(memberService.login(username, password));
-    }
-
-    @PostMapping("/whoami")
-    public ResponseEntity<String> whoami() {
-        return ResponseEntity.ok()
-                .body(SecurityUtil.getCurrentUsername());
     }
 
     @Operation(summary = "test if token works", security = @SecurityRequirement(name = "bearerAuth"))
