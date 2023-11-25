@@ -4,6 +4,7 @@ import static com.example.hackathon.global.error.exception.ErrorCode.FEED_NOT_FO
 
 import com.example.hackathon.domain.feed.repository.FeedRepository;
 import com.example.hackathon.domain.heart.domain.Heart;
+import com.example.hackathon.domain.heart.dto.HeartCountResponse;
 import com.example.hackathon.domain.heart.repository.HeartRepository;
 import com.example.hackathon.global.error.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -21,21 +22,27 @@ public class HeartService {
     private final HeartRepository heartRepository;
     private final FeedRepository feedRepository;
 
-    public void manageHeart(Long feedId) {
+    public Boolean manageHeart(Long feedId) {
 
-//        feedRepository.findById(feedId).orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
-//
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//        String email = userDetails.getUsername();
-//
-//        Heart heart = heartRepository.findByUsernameAndFeedId(email, feedId)
-//                .orElseGet(() -> Heart.builder()
-//                        .username(email)
-//                        .feedId(feedId)
-//                        .build());
-//
-//        heart.changeLike(false);
-//        heartRepository.save(heart);
+        feedRepository.findById(feedId).orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String email = userDetails.getUsername();
+
+        Heart heart = heartRepository.findByUsernameAndFeedId(email, feedId)
+                .orElseGet(() -> Heart.builder()
+                        .username(email)
+                        .feedId(feedId)
+                        .build());
+
+        heart.changeLike(false);
+        heartRepository.save(heart);
+
+        return true;
+    }
+
+    public HeartCountResponse heartCount(Long feedId) {
+        return new HeartCountResponse(heartRepository.countByFeedId(feedId));
     }
 }
