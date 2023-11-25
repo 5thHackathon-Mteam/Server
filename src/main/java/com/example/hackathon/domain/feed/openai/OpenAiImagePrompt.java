@@ -1,4 +1,4 @@
-package com.example.hackathon.domain.feed;
+package com.example.hackathon.domain.feed.openai;
 
 import static com.example.hackathon.global.error.exception.ErrorCode.GPT_INVALID_ERROR;
 
@@ -14,23 +14,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OpenAiPrompt {
+public class OpenAiImagePrompt {
 
     @Value("${open-ai.key}")
     private String apiKey;
 
-    @Value("${open-ai.model}")
+    @Value("${open-ai.image-model}")
     private String gptModel;
 
     @Value("${open-ai.requestUrl}")
     private String requestUrl;
 
-
     public String requestImage(String imageUrl) {
         HttpClient client = HttpClient.newHttpClient();
         JSONObject requestBody = new JSONObject();
-
-
         requestBody.put("model", gptModel);
         requestBody.put("messages", new JSONObject[]{
                 new JSONObject()
@@ -56,7 +53,7 @@ public class OpenAiPrompt {
         }
     }
 
-    public String getContent(String response) {
+    private String getContent(String response) {
         JSONObject obj = new JSONObject(response);
         JSONArray choices = obj.getJSONArray("choices");
         if (choices != null && choices.length() > 0) {

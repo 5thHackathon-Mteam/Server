@@ -4,6 +4,7 @@ import com.example.hackathon.domain.coment.dto.CommentResponse;
 import com.example.hackathon.domain.coment.service.CommentService;
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
+import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
 import com.example.hackathon.domain.feed.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -32,9 +33,24 @@ public class FeedController {
                 .body(feedService.getFeedList(cursorId, pageSize));
     }
 
+
     @GetMapping("/comments/{feedId}")
     public ResponseEntity<List<CommentResponse>> getComment(@PathVariable Long feedId) {
         return ResponseEntity.ok()
                 .body(commentService.getCommentByFeedId(feedId));
     }
+
+    @PatchMapping(value = "/update/{feedId}")
+    public ResponseEntity<FeedResponse> updateFeed(@PathVariable Long feedId,
+                           @RequestBody FeedUpdateRequest feedUpdateRequest) {
+        return ResponseEntity.ok()
+                .body(feedService.updateFeed(feedId, feedUpdateRequest));
+    }
+
+    @PostMapping(value = "/delete/{feedId}")
+    public ResponseEntity<Boolean> deleteFeed(@PathVariable Long feedId) {
+        return ResponseEntity.ok()
+                .body(feedService.deleteFeed(feedId));
+    }
+
 }

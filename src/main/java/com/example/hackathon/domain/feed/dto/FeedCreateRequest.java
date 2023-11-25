@@ -11,5 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class FeedCreateRequest {
     private List<MultipartFile> multipartFiles;
-    private String content;
+    private List<String> categories;
 }

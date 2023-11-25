@@ -18,6 +18,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.*;
 
 @Entity
 @Builder
@@ -29,13 +33,18 @@ public class Feed extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String content;
     private String gptContent;
 
-    @Enumerated(EnumType.STRING)
-    private Category category;
+    public void changeGptContent(String gptContent) {
+        this.gptContent = gptContent;
+    }
 
     @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     @Where(clause = "parent_id is null")
     private List<Comment> commentList = new ArrayList<>();
+
+    public void changeIsDeleted() {
+        this.isDeleted = true;
+    }
+
 }
