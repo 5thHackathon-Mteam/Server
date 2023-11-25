@@ -23,19 +23,19 @@ public class HeartService {
 
     public void manageHeart(Long feedId) {
 
-        feedRepository.findById(feedId).orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-
-        Heart heart = heartRepository.findByUsernameAndFeedId(email, feedId)
-                .orElseGet(() -> Heart.builder()
-                        .username(email)
-                        .feedId(feedId)
-                        .build());
-
-        heart.changeLike(false);
-        heartRepository.save(heart);
+//        feedRepository.findById(feedId).orElseThrow(() -> new CustomException(FEED_NOT_FOUND));
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        String email = userDetails.getUsername();
+//
+//        Heart heart = heartRepository.findByUsernameAndFeedId(email, feedId)
+//                .orElseGet(() -> Heart.builder()
+//                        .username(email)
+//                        .feedId(feedId)
+//                        .build());
+//
+//        heart.changeLike(false);
+//        heartRepository.save(heart);
     }
 }
