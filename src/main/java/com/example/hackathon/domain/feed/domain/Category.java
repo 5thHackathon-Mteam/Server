@@ -1,16 +1,30 @@
 package com.example.hackathon.domain.feed.domain;
 
-public enum Category {
-    DAILY, // 일상
-    TRAVEL, //여행
-    FAMILY, // 가족
-    FRIEND,
-    COUPLE, // 연인
-    FOOD, // 음식
-    SPACE, // 공간
-    EXHIBITION, // 전시
-    FASHION, // 패션
-    EXERCISE, // 운동
-    CULTURE, // 문화
-    NONE; // DEFAULT
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Builder
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public class Category {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feed_id")
+    private Feed feed;
 }
