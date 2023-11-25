@@ -2,6 +2,7 @@ package com.example.hackathon.domain.feed.controller;
 
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
+import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
 import com.example.hackathon.domain.feed.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -27,5 +28,12 @@ public class FeedController {
                                                             @RequestParam int pageSize) {
         return ResponseEntity.ok()
                 .body(feedService.getFeedList(cursorId, pageSize));
+    }
+
+    @PatchMapping(value = "/{feedId}")
+    public ResponseEntity<FeedResponse> updateFeed(@PathVariable Long feedId,
+                           @RequestBody FeedUpdateRequest feedUpdateRequest) {
+        return ResponseEntity.ok()
+                .body(feedService.update(feedId, feedUpdateRequest));
     }
 }

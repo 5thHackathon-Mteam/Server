@@ -20,4 +20,8 @@ public class Feed extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Category category;
 
+    public void update(String gptContent) {
+        this.gptContent = gptContent;
+    }
+
 }

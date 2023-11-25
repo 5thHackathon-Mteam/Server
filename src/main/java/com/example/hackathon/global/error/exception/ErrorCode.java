@@ -20,6 +20,7 @@ public enum ErrorCode {
     UPLOAD_S3_ERROR(500, "F0001", "서버에서 S3 사진 업로드 에러입니다."),
     CONNECT_S3_ERROR(500, "F0002", "서버에서 S3 연결 에러입니다."),
     FEED_IMAGE_INVALID_SIZE(400, "F0003", "사진 업로드시 4장이 필수입니다."),
+    FEED_NOT_FOUND(404, "F0004", "피드를 찾을 수 없습니다."),
 
 
     // Open Ai
