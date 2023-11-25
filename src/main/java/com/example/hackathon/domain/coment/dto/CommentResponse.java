@@ -28,4 +28,10 @@ public record CommentResponse(
                 comment.getLastModifiedDate()
         );
     }
+
+    public static List<CommentResponse> listOf(List<Comment> allByFeedId) {
+        return allByFeedId.stream()
+                .map(CommentResponse::from)
+                .collect(Collectors.toList());
+    }
 }
