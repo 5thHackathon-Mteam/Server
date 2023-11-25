@@ -39,6 +39,7 @@ dependencies {
 
 	// openapi
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+	implementation 'org.json:json:20210307'
 
 	// querydsl
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
@@ -48,6 +49,8 @@ dependencies {
 
 	// aws
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+	implementation 'org.hibernate.validator:hibernate-validator'
 
 }
 

@@ -11,12 +11,10 @@ import lombok.NoArgsConstructor;
 public class FeedResponse {
     private Long id;
     private String gptContent;
-    private List<Category> categories;
 
     @Builder @QueryProjection
-    public FeedResponse(Long id, String content, String gptContent, List<Category> categories) {
+    public FeedResponse(Long id, String gptContent) {
         this.id = id;
         this.gptContent = gptContent;
-        this.categories = categories;
     }
 }
