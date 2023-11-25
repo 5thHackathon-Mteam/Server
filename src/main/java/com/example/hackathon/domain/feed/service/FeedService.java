@@ -1,6 +1,7 @@
 package com.example.hackathon.domain.feed.service;
 
 import static com.example.hackathon.global.error.exception.ErrorCode.CONNECT_S3_ERROR;
+import static com.example.hackathon.global.error.exception.ErrorCode.FEED_IMAGE_INVALID_SIZE;
 
 import com.example.hackathon.domain.feed.domain.Category;
 import com.example.hackathon.domain.feed.domain.Feed;
@@ -26,6 +27,7 @@ public class FeedService {
     private final FeedRepository feedRepository;
 
     public void create(FeedCreateRequest request) {
+        validate(request);
         List<String> imageUrls = getImageUrls(request);
         List<FeedImage> feedImages = imageUrls.stream()
                 .map(feedImageService::from).toList();
@@ -43,12 +45,18 @@ public class FeedService {
         feedRepository.save(buildFeed);
     }
 
+    public void validate(FeedCreateRequest request){
+        List<MultipartFile> multipartFiles = request.getMultipartFiles();
+        if (multipartFiles.size() != 4) {
+            throw new CustomException(FEED_IMAGE_INVALID_SIZE);
+        }
+    }
+
     public List<String> getImageUrls(FeedCreateRequest request) {
         List<MultipartFile> multipartFiles = request.getMultipartFiles();
         try {
             return s3Uploader.uploadMultipartFiles(multipartFiles);
         } catch (IOException e) {
-            log.info("imageUrls 추출 도중 오류");
             throw new CustomException(CONNECT_S3_ERROR);
         }
     }
