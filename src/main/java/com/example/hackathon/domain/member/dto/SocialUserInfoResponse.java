@@ -15,13 +15,16 @@ public class SocialUserInfoResponse {
     private Long id;
     @Schema(description = "닉네임", example = "tester")
     private String nickname;
-    @Schema(description = "엑세스 토큰")
-    private String accessToken;
 
-    public static SocialUserInfoResponse of(Long id, String nickname) {
+    @Schema(description = "이메일")
+    private String email;
+
+
+    public static SocialUserInfoResponse of(Long id, String nickname, String email) {
         return SocialUserInfoResponse.builder()
                 .id(id)
                 .nickname(nickname)
+                .email(email)
                 .build();
     }
 
