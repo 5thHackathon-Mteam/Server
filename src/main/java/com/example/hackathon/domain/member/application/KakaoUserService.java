@@ -19,6 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -37,7 +38,7 @@ public class KakaoUserService {
     private final OauthProperties oauthProperties;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public TokenInfo kakaoLogin(String code, String redirect_uri, HttpServletResponse response) throws JsonProcessingException {
+    public SocialUserInfoResponse kakaoLogin(String code, String redirect_uri, HttpServletResponse response) throws JsonProcessingException {
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getAccessToken(code, redirect_uri);
 
@@ -51,7 +52,7 @@ public class KakaoUserService {
         Authentication authentication = forceLogin(kakaoUser);
 
         // 5. response Header, Body에 JWT 토큰 추가
-        return kakaoUsersAuthorizationInput(authentication);
+        return kakaoUsersAuthorizationInput(authentication, kakaoUser);
     }
 
     private String getAccessToken(String code, String redirect_uri) throws JsonProcessingException {
@@ -113,12 +114,16 @@ public class KakaoUserService {
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
 
-        return SocialUserInfoResponse.of(id, nickname);
+        String email = jsonNode.get("kakao_account")
+                .get("email").asText();
+
+        return SocialUserInfoResponse.of(id, nickname, email);
     }
 
     private Member registerKakaoUserIfNeed (SocialUserInfoResponse kakaoUserInfo) {
         String userId = kakaoUserInfo.getId().toString();
         String nickname = kakaoUserInfo.getNickname();
+        String email = kakaoUserInfo.getEmail();
         Member kakaoUser = memberRepository.findByUserId(userId)
                 .orElse(null);
 
@@ -131,6 +136,7 @@ public class KakaoUserService {
                     .username(nickname)
                     .password(encodedPassword)
                     .roles(List.of("USER"))
+                    .email(email)
                     .build();
 
             memberRepository.save(kakaoUser);
@@ -146,7 +152,14 @@ public class KakaoUserService {
         return authentication;
     }
 
-    private TokenInfo kakaoUsersAuthorizationInput(Authentication authentication) {
-        return jwtTokenProvider.generateToken(authentication);
+    private SocialUserInfoResponse kakaoUsersAuthorizationInput(Authentication authentication, Member kakaoUser) {
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
+
+        return SocialUserInfoResponse.of(
+                kakaoUser.getId(),
+                kakaoUser.getUsername(),
+                kakaoUser.getEmail(),
+                tokenInfo
+        );
     }
 }

@@ -60,4 +60,12 @@ public class FeedController {
                 .body(feedService.deleteFeed(feedId));
     }
 
+    @GetMapping(value = "member/{memberId}")
+    public ResponseEntity<List<FeedResponse>> getFeedListByMemberId(@PathVariable Long memberId,
+                                                                    @RequestParam(required = false) Long cursorId,
+                                                                    @RequestParam int pageSize) {
+        return ResponseEntity.ok()
+                .body(feedService.getFeedListByMemberId(memberId, cursorId, pageSize));
+    }
+
 }
