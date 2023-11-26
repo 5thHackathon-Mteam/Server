@@ -4,8 +4,12 @@ import static com.example.hackathon.global.error.exception.ErrorCode.ALREADY_FRI
 
 import com.example.hackathon.domain.friend.domain.Friend;
 import com.example.hackathon.domain.friend.dto.CreateFriendRequest;
+import com.example.hackathon.domain.friend.dto.FriendListResponse;
+import com.example.hackathon.domain.friend.dto.FriendRequest;
 import com.example.hackathon.domain.friend.repository.FriendRepository;
+import com.example.hackathon.domain.member.domain.Member;
 import com.example.hackathon.global.error.exception.CustomException;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class FriendService {
     private final FriendRepository friendRepository;
     public void requestFriend(CreateFriendRequest createFriendRequest) {
-
         String currentEmail = createFriendRequest.getCurrentEmail();
         String toUserEmail = createFriendRequest.getTargetEmail();
 
@@ -58,4 +61,11 @@ public class FriendService {
     }
 
 
+    public FriendListResponse getFriendList(FriendRequest friendRequest) {
+        String currentMail = friendRequest.getCurrentMail();
+        List<Member> mutualFriends = friendRepository.findMutualFriends(currentMail);
+         return FriendListResponse.builder()
+                .friends(mutualFriends)
+                .build();
+    }
 }
