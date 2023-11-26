@@ -33,6 +33,8 @@ public class Member extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+    private String avatarUrl;
+
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     private List<Member> friends;
 

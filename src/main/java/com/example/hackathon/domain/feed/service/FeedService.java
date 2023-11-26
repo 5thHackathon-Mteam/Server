@@ -1,19 +1,24 @@
 package com.example.hackathon.domain.feed.service;
 
 import com.example.hackathon.domain.feed.domain.Feed;
+import com.example.hackathon.domain.feed.domain.FeedImage;
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
+import com.example.hackathon.domain.feed.dto.FeedImageResponse;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
 import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
 import com.example.hackathon.domain.feed.openai.OpenAiService;
+import com.example.hackathon.domain.feed.repository.FeedImageRepository;
 import com.example.hackathon.domain.feed.repository.FeedRepository;
 import com.example.hackathon.global.config.S3Uploader;
 import com.example.hackathon.global.error.exception.CustomException;
+import com.example.hackathon.global.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.hackathon.global.error.exception.ErrorCode.*;
@@ -28,8 +33,10 @@ public class FeedService {
     private final FeedRepository feedRepository;
     private final OpenAiService openAiService;
     private final CategoryService categoryService;
+    private final FeedImageRepository feedImageRepository;
 
     public void create(FeedCreateRequest request) {
+
         validate(request);
 
         List<String> imageUrls = getImageUrls(request);
@@ -37,7 +44,10 @@ public class FeedService {
         List<String> categories = request.getCategories();
 
         Feed buildFeed = Feed.builder()
+                .frameColor(request.getFrameColor())
                 .gptContent(gptContent)
+                .date(request.getDate())
+                .memberId(request.getId())
                 .build();
 
         feedRepository.save(buildFeed);
@@ -74,6 +84,7 @@ public class FeedService {
         try {
             return s3Uploader.uploadMultipartFiles(multipartFiles);
         } catch (IOException e) {
+            System.out.println("e = " + e);
             throw new CustomException(CONNECT_S3_ERROR);
         }
     }
@@ -101,5 +112,23 @@ public class FeedService {
         feedRepository.save(feed);
 
         return true;
+    }
+
+    public List<FeedImageResponse> getFeedImages(Long feedId) {
+        List<FeedImage> allByFeedId = feedImageRepository.findAllByFeedId(feedId);
+
+        List<FeedImageResponse> feedImageResponses = new ArrayList<>();
+
+        for (FeedImage feedImage : allByFeedId) {
+            feedImageResponses.add(new FeedImageResponse(feedImage.getImageUrl()));
+        }
+
+        return feedImageResponses;
+
+
+    }
+
+    public List<FeedResponse> getFeedListByMemberId(Long memberId, Long cursorId, int pageSize) {
+        return feedRepository.findPageByCursorIdAndMemberId(cursorId, pageSize, memberId);
     }
 }

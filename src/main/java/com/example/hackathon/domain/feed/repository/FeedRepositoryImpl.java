@@ -20,10 +20,28 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
         return jpaQueryFactory
                 .select(new QFeedResponse(
                         feed.id,
-                        feed.gptContent
+                        feed.gptContent,
+                        feed.frameColor,
+                        feed.date
                 ))
                 .from(feed)
                 .where(ltCursorId(cursorId), feed.isDeleted.eq(false))
+                .orderBy(feed.createdDate.desc())
+                .limit(pageSize)
+                .fetch();
+    }
+
+    @Override
+    public List<FeedResponse> findPageByCursorIdAndMemberId(Long cursorId, int pageSize, Long memberId) {
+        return jpaQueryFactory
+                .select(new QFeedResponse(
+                        feed.id,
+                        feed.gptContent,
+                        feed.frameColor,
+                        feed.date
+                ))
+                .from(feed)
+                .where(ltCursorId(cursorId), feed.isDeleted.eq(false), feed.memberId.eq(memberId))
                 .orderBy(feed.createdDate.desc())
                 .limit(pageSize)
                 .fetch();

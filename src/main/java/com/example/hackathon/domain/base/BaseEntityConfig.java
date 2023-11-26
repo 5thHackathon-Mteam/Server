@@ -14,11 +14,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Configuration
 public class BaseEntityConfig {
 
-    @Bean
-    public AuditorAware<String> auditorProvider() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
-        return () -> Optional.of(email);
-    }
+//    @Bean
+//    public AuditorAware<String> auditorProvider() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+//        String email = userDetails.getUsername();
+//        return () -> Optional.of(email);
+//    }
 }

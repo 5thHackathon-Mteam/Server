@@ -25,7 +25,9 @@ public enum ErrorCode {
 
     // Open Ai
     GPT_INVALID_ERROR(500, "G0001", "사진으로 질문 후 응답 받을 수 없는 서버에러입니다."),
-
+  
+    // friend
+    ALREADY_FRIEND(400, "F0101", "이미 친구입니다."),
 
     // Member
     MEMBER_NOT_FOUND(404, "U0001", "유저가 존재하지 않습니다."),

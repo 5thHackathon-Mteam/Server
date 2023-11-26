@@ -3,6 +3,7 @@ package com.example.hackathon.domain.feed.controller;
 import com.example.hackathon.domain.coment.dto.CommentResponse;
 import com.example.hackathon.domain.coment.service.CommentService;
 import com.example.hackathon.domain.feed.dto.FeedCreateRequest;
+import com.example.hackathon.domain.feed.dto.FeedImageResponse;
 import com.example.hackathon.domain.feed.dto.FeedResponse;
 import com.example.hackathon.domain.feed.dto.FeedUpdateRequest;
 import com.example.hackathon.domain.feed.service.FeedService;
@@ -33,6 +34,12 @@ public class FeedController {
                 .body(feedService.getFeedList(cursorId, pageSize));
     }
 
+    @GetMapping(value = "/images")
+    public ResponseEntity<List<FeedImageResponse>> getFeedImages(@RequestParam Long feedId) {
+        return ResponseEntity.ok()
+                .body(feedService.getFeedImages(feedId));
+    }
+
 
     @GetMapping("/comments/{feedId}")
     public ResponseEntity<List<CommentResponse>> getComment(@PathVariable Long feedId) {
@@ -51,6 +58,14 @@ public class FeedController {
     public ResponseEntity<Boolean> deleteFeed(@PathVariable Long feedId) {
         return ResponseEntity.ok()
                 .body(feedService.deleteFeed(feedId));
+    }
+
+    @GetMapping(value = "member/{memberId}")
+    public ResponseEntity<List<FeedResponse>> getFeedListByMemberId(@PathVariable Long memberId,
+                                                                    @RequestParam(required = false) Long cursorId,
+                                                                    @RequestParam int pageSize) {
+        return ResponseEntity.ok()
+                .body(feedService.getFeedListByMemberId(memberId, cursorId, pageSize));
     }
 
 }
