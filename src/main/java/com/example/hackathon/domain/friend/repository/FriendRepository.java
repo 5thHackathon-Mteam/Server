@@ -24,9 +24,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
                         @Param("toUserEmail") String toUserEmail);
 
 
-    @Query("SELECT m FROM Member m WHERE m.username IN (" +
+    @Query("SELECT m FROM Member m WHERE m.email IN (" +
             "SELECT f.fromUserEmail FROM Friend f WHERE f.toUserEmail = :currentEmail AND f.areWeFriend = true) " +
-            "OR m.username IN (" +
+            "OR m.email IN (" +
             "SELECT f.toUserEmail FROM Friend f WHERE f.fromUserEmail = :currentEmail AND f.areWeFriend = true)")
     List<Member> findMutualFriends(@Param("currentEmail") String currentEmail);
 

@@ -6,6 +6,7 @@ import com.example.hackathon.domain.friend.domain.Friend;
 import com.example.hackathon.domain.friend.dto.CreateFriendRequest;
 import com.example.hackathon.domain.friend.dto.FriendListResponse;
 import com.example.hackathon.domain.friend.dto.FriendRequest;
+import com.example.hackathon.domain.friend.dto.MemberDto;
 import com.example.hackathon.domain.friend.repository.FriendRepository;
 import com.example.hackathon.domain.member.domain.Member;
 import com.example.hackathon.global.error.exception.CustomException;
@@ -64,8 +65,15 @@ public class FriendService {
     public FriendListResponse getFriendList(FriendRequest friendRequest) {
         String currentMail = friendRequest.getCurrentMail();
         List<Member> mutualFriends = friendRepository.findMutualFriends(currentMail);
-         return FriendListResponse.builder()
-                .friends(mutualFriends)
+
+        List<MemberDto> memberDtoList = mutualFriends.stream()
+                .map(mutualFriend -> MemberDto.builder()
+                        .email(mutualFriend.getEmail())
+                        .build())
+                .toList();
+
+        return FriendListResponse.builder()
+                .friends(memberDtoList)
                 .build();
     }
 }

@@ -8,5 +8,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class FriendListResponse {
-    private List<Member> friends;
+    private List<MemberDto> friends;
 }
